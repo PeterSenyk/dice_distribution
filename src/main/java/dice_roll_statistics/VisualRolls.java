@@ -25,7 +25,7 @@ public class VisualRolls extends Application {
     @Override
     public void start(Stage stage) {
         // Creates a VBox layout with spacing
-        VBox root = new VBox(10);
+        VBox root = new VBox(20);
         // Set padding around the layout
         root.setPadding(new Insets(10));
 
@@ -34,6 +34,7 @@ public class VisualRolls extends Application {
 
         Button rollButton = new Button("Roll");
         TextArea resultsArea = new TextArea();
+        resultsArea.setPrefHeight(220);
         resultsArea.setEditable(false);
 
         rollButton.setOnAction(event -> {
@@ -57,7 +58,7 @@ public class VisualRolls extends Application {
 
             StringBuilder resultsText = new StringBuilder();
             for (int sum = 2; sum <= 12; sum++) {
-                resultsText.append("Sum ").append(sum).append(": ").append(frequencyOfSums[sum]).append(" times\n");
+                resultsText.append("Sum ").append(sum).append("  --->  ").append(frequencyOfSums[sum]).append(" rolls\n");
             }
             // Display all roll results
             resultsArea.setText(resultsText.toString());

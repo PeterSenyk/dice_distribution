@@ -1,3 +1,6 @@
+package dice_roll_statistics;
+
+
 import java.util.Arrays;
 
 public class DiceRoll {

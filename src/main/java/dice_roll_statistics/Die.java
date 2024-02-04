@@ -1,3 +1,5 @@
+package dice_roll_statistics;
+
 import java.util.Random;
 
 /**

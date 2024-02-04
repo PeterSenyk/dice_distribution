@@ -1,3 +1,5 @@
+package dice_roll_statistics;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

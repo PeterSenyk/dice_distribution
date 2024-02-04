@@ -48,7 +48,7 @@ public class VisualRolls extends Application {
 
             StringBuilder resultsText = new StringBuilder();
             for (int i = 0; i < results.length; i++) {
-                resultsText.append("Roll ").append(i + 1).append(": Sum = ").append(results[i]).append("\b");
+                resultsText.append("Roll ").append(i + 1).append(": Sum = ").append(results[i]).append("\n");
             }
             // Display all roll results
             resultsArea.setText(resultsText.toString());

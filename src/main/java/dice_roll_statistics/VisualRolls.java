@@ -8,6 +8,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -38,6 +39,8 @@ public class VisualRolls extends Application {
         numberOfRollsField.setPromptText("Enter the number of times that you want to roll ");
 
         Button rollButton = new Button("Roll");
+
+        // Setup text results area
         TextArea resultsArea = new TextArea();
         resultsArea.setPrefHeight(220);
         resultsArea.setEditable(false);
@@ -49,6 +52,11 @@ public class VisualRolls extends Application {
         barChart.setTitle("Roll Distribution");
         xAxis.setLabel("Value");
         yAxis.setLabel("Frequency");
+
+        // Setup average rolls before seven area
+        Label averageLabel = new Label("Average number of rolls before any seven: ");
+        TextField averageResults = new TextField();
+        averageResults.setEditable(false);
 
         // Set action  event for roll button
         rollButton.setOnAction(event -> {
@@ -62,6 +70,10 @@ public class VisualRolls extends Application {
             // Constant number of dice, number of rolls from input
             DiceRoll roll = new DiceRoll(Die.NUMBER_OF_DICE, numberOfRolls);
             HashMap<Integer, Integer> frequencyMap = roll.rollDiceMultipleTimesForFrequency();
+            double averageRollsBeforeSeven = roll.averageNumberOfRollsBeforeSeven();
+
+            // Set calculated average in the averageResults field
+            averageResults.setText(String.format("%.2f", averageRollsBeforeSeven));
 
             // Builds the output string for each results
             StringBuilder resultsText = new StringBuilder();
@@ -85,7 +97,7 @@ public class VisualRolls extends Application {
         });
 
         // Add components to the layout
-        root.getChildren().addAll(numberOfRollsField, rollButton, resultsArea, barChart);
+        root.getChildren().addAll(numberOfRollsField, rollButton, resultsArea, barChart, averageLabel, averageResults);
 
         // Create the scene with the layout
         Scene scene = new Scene(root, 400, 800);

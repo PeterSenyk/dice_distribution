@@ -74,6 +74,7 @@ public class VisualRolls extends Application {
             // Populate bar chart with frequencies
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Frequency of Sums");
+
             frequencyMap.forEach((sum, frequency) ->
                     series.getData().add(new XYChart.Data<>(String.valueOf(sum), frequency)));
             barChart.getData().add(series);

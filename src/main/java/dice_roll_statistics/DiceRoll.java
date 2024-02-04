@@ -2,6 +2,7 @@ package dice_roll_statistics;
 
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DiceRoll {
@@ -44,30 +45,55 @@ public class DiceRoll {
         return sumFrequencies;
     }
 
-    /**
-     * Returns a string representation of DiceRoll.
-     *
-     * @return toString description
-     */
-    @Override
-    public String toString() {
-        return "DiceRoll{" +
-                "dice=" + Arrays.toString(dice) +
-                ", numberOfRolls=" + numberOfRolls +
-                '}';
-    }
+    public double averageNumberOfRollsBeforeSeven () {
+        int count = 0;
+        ArrayList<Integer> countsBeforeSeven = new ArrayList<>();
 
-    /**
-     * Demonstrates the use of DiceRoll
-     *
-     * @param args unused
-     */
-    public static void main(final String[] args) {
-        int numberOfDice = 2;
-        int numberOfRolls = 10;
+        for (int i = 0; i < numberOfRolls; i++) {
+                count++;
+                int sumOfRoll = 0;
+                for (Die die : dice) {
+                    die.roll();
+                    sumOfRoll += die.getFaceValue();
+                }
+                if (sumOfRoll == 7) {
+                    countsBeforeSeven.add(count);
+                    count = 0;
+                }
+            }
+            // Calculate the average number of rolls before any seven is rolled
+            double sumOfCounts = 0;
+            for (int singleCountBeforeSeven : countsBeforeSeven) {
+                sumOfCounts += singleCountBeforeSeven;
+            }
+            return !countsBeforeSeven.isEmpty() ? sumOfCounts / countsBeforeSeven.size() : numberOfRolls;
+        }
 
-        DiceRoll roll = new DiceRoll(numberOfDice, numberOfRolls);
-        roll.rollDiceMultipleTimesForFrequency();
-        System.out.println(roll);
+        /**
+         * Returns a string representation of DiceRoll.
+         *
+         * @return toString description
+         */
+
+        @Override
+        public String toString () {
+            return "DiceRoll{" +
+                    "dice=" + Arrays.toString(dice) +
+                    ", numberOfRolls=" + numberOfRolls +
+                    '}';
+        }
+
+        /**
+         * Demonstrates the use of DiceRoll
+         *
+         * @param args unused
+         */
+        public static void main ( final String[] args){
+            int numberOfDice = 2;
+            int numberOfRolls = 10;
+
+            DiceRoll roll = new DiceRoll(numberOfDice, numberOfRolls);
+            roll.rollDiceMultipleTimesForFrequency();
+            System.out.println(roll);
+        }
     }
-}

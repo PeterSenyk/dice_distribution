@@ -52,49 +52,43 @@ public class VisualRolls extends Application {
 
         // Set action  event for roll button
         rollButton.setOnAction(event -> {
-            int numberOfRolls;
+            // Clear previous results
+            resultsArea.clear();
+            barChart.getData().clear();
 
             try {
-                numberOfRolls = Integer.parseInt(numberOfRollsField.getText());
-            } catch (NumberFormatException e) {
-                System.err.println("Please enter a valid number of rolls.");
-                return;
-            }
+               int numberOfRolls = Integer.parseInt(numberOfRollsField.getText());
 
             // Constant number of dice, number of rolls from input
             DiceRoll roll = new DiceRoll(Die.NUMBER_OF_DICE, numberOfRolls);
             HashMap<Integer, Integer> frequencyMap = roll.rollDiceMultipleTimesForFrequency();
 
-            // Clear previous data from the bar chart
-            barChart.getData().clear();
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.setName("Frequency of Sums");
-
-            // Populate bar chart with frequencies
-            frequencyMap.forEach((sum, frequency) -> {
-                series.getData().add(new XYChart.Data<>(String.valueOf(sum), frequency));
-            });
-
-            barChart.getData().add(series);
-        });
-
-
             // Builds the output string for each results
             StringBuilder resultsText = new StringBuilder();
-            for (int sum = 2; sum <= 12; sum++) {
-                resultsText.append("Sum ").append(sum).append("  --->  ").append(frequencyOfSums[sum])
-                        .append(" rolls\n");
-            }
+            frequencyMap.forEach((sum, frequency) ->
+                    resultsText.append("Sum ").append(sum).append("  --->  ").append(frequency).append(" rolls\n"));
+
             // Display all roll results
             resultsArea.setText(resultsText.toString());
+
+            // Populate bar chart with frequencies
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Frequency of Sums");
+            frequencyMap.forEach((sum, frequency) ->
+                    series.getData().add(new XYChart.Data<>(String.valueOf(sum), frequency)));
+            barChart.getData().add(series);
+
+        } catch (NumberFormatException e) {
+            resultsArea.setText("Please enter a valid integer for number of rolls");
+        }
         });
 
         // Add components to the layout
-        root.getChildren().addAll(numberOfRollsField, rollButton, resultsArea);
+        root.getChildren().addAll(numberOfRollsField, rollButton, resultsArea, barChart);
 
         // Create the scene with the layout
-        Scene scene = new Scene(root, 400, 500);
-        stage.setTitle("Dice Roller");
+        Scene scene = new Scene(root, 400, 800);
+        stage.setTitle("Dice Roller Statistics");
         // Set the scene on the stage
         stage.setScene(scene);
         // Display the stage

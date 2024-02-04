@@ -30,7 +30,7 @@ public class VisualRolls extends Application {
         root.setPadding(new Insets(10));
 
         TextField numberOfRollsField = new TextField();
-        numberOfRollsField.setPromptText("Enter the number of times that you want to roll between 1 and 100 inclusive");
+        numberOfRollsField.setPromptText("Enter the number of times that you want to roll ");
 
         Button rollButton = new Button("Roll");
         TextArea resultsArea = new TextArea();
@@ -39,16 +39,25 @@ public class VisualRolls extends Application {
         rollButton.setOnAction(event -> {
             // Clear previous results
             resultsArea.clear();
+
             // Parse the input
             int numberOfRolls = Integer.parseInt(numberOfRollsField.getText());
+
             // Constant number of dice, number of rolls from input
             DiceRoll roll = new DiceRoll(Die.NUMBER_OF_DICE, numberOfRolls);
             roll.rollDiceMultipleTimes();
             int[] results = roll.getRollResults();
 
+            // Calculate frequencies of sums
+            int[] frequencyOfSums = new int[13]; // Sums can range from 2 to 12 with two dice
+            for (int result : results) {
+                if (result >= 2 && result <= 12) frequencyOfSums[result]++;
+            }
+
+
             StringBuilder resultsText = new StringBuilder();
-            for (int i = 0; i < results.length; i++) {
-                resultsText.append("Roll ").append(i + 1).append(": Sum = ").append(results[i]).append("\n");
+            for (int sum = 2; sum <= 12; sum++) {
+                resultsText.append("Sum ").append(sum).append(": ").append(frequencyOfSums[sum]).append(" times\n");
             }
             // Display all roll results
             resultsArea.setText(resultsText.toString());
@@ -58,7 +67,7 @@ public class VisualRolls extends Application {
         root.getChildren().addAll(numberOfRollsField, rollButton, resultsArea);
 
         // Create the scene with the layout
-        Scene scene = new Scene(root, 400, 800);
+        Scene scene = new Scene(root, 400, 500);
         stage.setTitle("Dice Roller");
         // Set the scene on the stage
         stage.setScene(scene);

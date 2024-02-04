@@ -3,11 +3,16 @@ package dice_roll_statistics;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.util.HashMap;
 
 /**
  * Shows a visual representation of dice rolls
@@ -37,28 +42,48 @@ public class VisualRolls extends Application {
         resultsArea.setPrefHeight(220);
         resultsArea.setEditable(false);
 
-        rollButton.setOnAction(event -> {
-            // Clear previous results
-            resultsArea.clear();
+        // Setup BarCart
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setTitle("Roll Distribution");
+        xAxis.setLabel("Value");
+        yAxis.setLabel("Frequency");
 
-            // Parse the input
-            int numberOfRolls = Integer.parseInt(numberOfRollsField.getText());
+        // Set action  event for roll button
+        rollButton.setOnAction(event -> {
+            int numberOfRolls;
+
+            try {
+                numberOfRolls = Integer.parseInt(numberOfRollsField.getText());
+            } catch (NumberFormatException e) {
+                System.err.println("Please enter a valid number of rolls.");
+                return;
+            }
 
             // Constant number of dice, number of rolls from input
             DiceRoll roll = new DiceRoll(Die.NUMBER_OF_DICE, numberOfRolls);
-            roll.rollDiceMultipleTimes();
-            int[] results = roll.getRollResults();
+            HashMap<Integer, Integer> frequencyMap = roll.rollDiceMultipleTimesForFrequency();
 
-            // Calculate frequencies of sums
-            int[] frequencyOfSums = new int[13]; // Sums can range from 2 to 12 with two dice
-            for (int result : results) {
-                if (result >= 2 && result <= 12) frequencyOfSums[result]++;
-            }
+            // Clear previous data from the bar chart
+            barChart.getData().clear();
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Frequency of Sums");
+
+            // Populate bar chart with frequencies
+            frequencyMap.forEach((sum, frequency) -> {
+                series.getData().add(new XYChart.Data<>(String.valueOf(sum), frequency));
+            });
+
+            barChart.getData().add(series);
+        });
 
 
+            // Builds the output string for each results
             StringBuilder resultsText = new StringBuilder();
             for (int sum = 2; sum <= 12; sum++) {
-                resultsText.append("Sum ").append(sum).append("  --->  ").append(frequencyOfSums[sum]).append(" rolls\n");
+                resultsText.append("Sum ").append(sum).append("  --->  ").append(frequencyOfSums[sum])
+                        .append(" rolls\n");
             }
             // Display all roll results
             resultsArea.setText(resultsText.toString());

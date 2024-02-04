@@ -2,10 +2,10 @@ package dice_roll_statistics;
 
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class DiceRoll {
     private final Die[] dice;
-    private final int[] rollResults;
     private final int numberOfRolls;
 
     /**
@@ -16,7 +16,6 @@ public class DiceRoll {
     public DiceRoll(final int numberOfDice, final int numberOfRolls) {
         this.numberOfRolls = numberOfRolls;
         dice = new Die[numberOfDice];
-        rollResults = new int[numberOfRolls];
         initializeDice();
     }
 
@@ -28,25 +27,22 @@ public class DiceRoll {
 
 
     /**
-     * Rolls the array die and stores each result in an array.
+     * Rolls the array die and returns a frequency map of the results
+     *
+     * @return a HashMap where keys are the sums of dice rolls and the values are the frequency in which they are rolled
      */
-    public void rollDiceMultipleTimes() {
+    public HashMap<Integer, Integer> rollDiceMultipleTimesForFrequency() {
+        HashMap<Integer, Integer> sumFrequencies = new HashMap<>();
         for (int i = 0; i < numberOfRolls; i++) {
             int sumOfRoll = 0;
             for (Die die : dice) {
                 die.roll();
                 sumOfRoll += die.getFaceValue();
             }
-            rollResults[i] = sumOfRoll;
+            sumFrequencies.merge(sumOfRoll, 1, Integer::sum);
         }
+        return sumFrequencies;
     }
-
-    /**
-     * Returns the list of dice roll results
-     *
-     * @return rollResults as an int array
-     */
-    public int[] getRollResults() {return rollResults;}
 
     /**
      * Returns a string representation of DiceRoll.
@@ -57,7 +53,6 @@ public class DiceRoll {
     public String toString() {
         return "DiceRoll{" +
                 "dice=" + Arrays.toString(dice) +
-                ", rollResults=" + Arrays.toString(rollResults) +
                 ", numberOfRolls=" + numberOfRolls +
                 '}';
     }
@@ -72,7 +67,7 @@ public class DiceRoll {
         int numberOfRolls = 10;
 
         DiceRoll roll = new DiceRoll(numberOfDice, numberOfRolls);
-        roll.rollDiceMultipleTimes();
+        roll.rollDiceMultipleTimesForFrequency();
         System.out.println(roll);
     }
 }
